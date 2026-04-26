@@ -3,113 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercado Pro | Factura Dinámica</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <title>MegaStore | Factura Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #fbbf24; --dark: #0f172a; --secondary: #10b981; }
-        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; padding-bottom: 100px; }
-        .header { text-align: center; background: var(--dark); color: white; padding: 20px; margin: -20px -20px 20px -20px; border-radius: 0 0 20px 20px; }
-        .producto-row { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .controls { display: flex; align-items: center; gap: 10px; background: #eee; padding: 5px 10px; border-radius: 8px; }
-        .btn-q { border: none; background: none; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
-        .btn-add { background: var(--dark); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
-        .cart-float { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: var(--dark); color: white; padding: 15px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .btn-ws { background: var(--primary); color: var(--dark); border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        :root {
+            --primary: #6366f1;
+            --accent: #10b981;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding-bottom: 120px;
+        }
+
+        /* HEADER */
+        .navbar {
+            position: sticky; top: 0;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 15px 20px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
+
+        /* GRID PRODUCTOS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .card-img { font-size: 3rem; margin-bottom: 10px; }
+        .price { color: var(--accent); font-weight: 800; font-size: 1.1rem; }
+
+        /* CONTROLES */
+        .qty-wrapper {
+            display: flex; align-items: center; justify-content: center;
+            gap: 15px; background: rgba(0,0,0,0.2);
+            border-radius: 10px; margin: 10px 0; padding: 5px;
+        }
+        .btn-qty { background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem; }
+        .btn-add {
+            background: var(--primary); color: white; border: none;
+            padding: 10px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer;
+        }
+
+        /* MODAL DE FACTURA (EL RECIBO) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 3000;
+        }
+
+        .factura-card {
+            background: white; color: #333; width: 90%; max-width: 400px;
+            border-radius: 20px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .factura-header { text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 15px; margin-bottom: 15px; }
+        .factura-header h2 { margin: 0; color: var(--dark-bg); }
+
+        .factura-items { max-height: 250px; overflow-y: auto; margin-bottom: 15px; }
+        .factura-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+        .factura-total { font-size: 1.4rem; font-weight: 800; text-align: right; margin-top: 15px; color: #000; }
+
+        .btn-confirm {
+            background: var(--accent); color: white; border: none; width: 100%;
+            padding: 15px; border-radius: 12px; font-weight: 800; font-size: 1rem;
+            cursor: pointer; margin-top: 15px; display: flex; justify-content: center; gap: 10px;
+        }
+
+        .btn-close { position: absolute; top: 15px; right: 15px; background: #eee; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
+
+        /* FOOTER CART */
+        .footer-cart {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 500px; background: var(--card-bg);
+            padding: 15px 25px; border-radius: 50px; display: flex;
+            justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>🛒 MI MERCADO</h1>
-    <p>Añade productos y genera tu factura</p>
+<nav class="navbar">
+    <h1 style="margin:0; font-size: 1.5rem;">⚡ MEGASTORE PRO</h1>
+</nav>
+
+<div class="container">
+    <div class="grid" id="productGrid"></div>
 </div>
 
-<div id="lista-productos">
-    <div class="producto-row">
-        <div><strong>Papa Sabanera (lb)</strong><br><span style="color:var(--secondary)">$2.200</span></div>
-        <div style="display:flex; align-items:center;">
-            <div class="controls">
-                <button class="btn-q" onclick="cambiar('q1', -1)">-</button>
-                <span id="q1">1</span>
-                <button class="btn-q" onclick="cambiar('q1', 1)">+</button>
-            </div>
-            <button class="btn-add" onclick="agregar('Papa Sabanera (lb)', 2200, 'q1')">Añadir</button>
+<div class="modal-overlay" id="modalFactura">
+    <div class="factura-card">
+        <button class="btn-close" onclick="cerrarFactura()">×</button>
+        <div class="factura-header">
+            <h2>RECIBO DE VENTA</h2>
+            <p id="fechaFactura" style="font-size: 0.8rem; color: #666;"></p>
         </div>
-    </div>
-    <div class="producto-row">
-        <div><strong>Arroz Diana (1kg)</strong><br><span style="color:var(--secondary)">$3.800</span></div>
-        <div style="display:flex; align-items:center;">
-            <div class="controls">
-                <button class="btn-q" onclick="cambiar('q2', -1)">-</button>
-                <span id="q2">1</span>
-                <button class="btn-q" onclick="cambiar('q2', 1)">+</button>
+        
+        <div id="listaFactura" class="factura-items">
             </div>
-            <button class="btn-add" onclick="agregar('Arroz Diana (1kg)', 3800, 'q2')">Añadir</button>
+
+        <div class="factura-total">
+            TOTAL: $<span id="totalFactura">0</span>
         </div>
+
+        <button class="btn-confirm" onclick="confirmarWhatsApp()">
+            CONFIRMAR Y ENVIAR <i class="fab fa-whatsapp"></i>
+        </button>
     </div>
 </div>
 
-<div class="cart-float">
-    <div>Items: <span id="c-count">0</span> | Total: <strong>$<span id="c-total">0</span></strong></div>
-    <button class="btn-ws" onclick="enviarWhatsApp()">PEDIR POR WHATSAPP</button>
+<div class="footer-cart">
+    <div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">LLEVAS:</span><br>
+        <span style="font-weight: 800; font-size: 1.2rem;">$<span id="totalFooter">0</span></span>
+    </div>
+    <button class="btn-add" style="width: auto; padding: 10px 25px; background: var(--accent);" onclick="abrirFactura()">
+        VER FACTURA
+    </button>
 </div>
 
 <script>
-    let carrito = [];
-    let totalGeneral = 0;
+    const products = [
+        { id: 1, name: 'AirPods Max', price: 1200000, icon: '🎧' },
+        { id: 2, name: 'iPhone 15 Pro', price: 4500000, icon: '📱' },
+        { id: 3, name: 'Smartwatch V8', price: 250000, icon: '⌚' },
+        { id: 4, name: 'Cámara Pro', price: 1800000, icon: '📷' },
+        { id: 5, name: 'Mouse Gamer', price: 150000, icon: '🖱️' },
+        { id: 6, name: 'Teclado Mecánico', price: 300000, icon: '⌨️' }
+    ];
 
-    function cambiar(id, delta) {
-        let el = document.getElementById(id);
+    let cart = [];
+    let total = 0;
+
+    function render() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = products.map(p => `
+            <div class="card">
+                <div class="card-img">${p.icon}</div>
+                <h3>${p.name}</h3>
+                <p class="price">$${p.price.toLocaleString()}</p>
+                <div class="qty-wrapper">
+                    <button class="btn-qty" onclick="changeQty(${p.id}, -1)">-</button>
+                    <span id="q-${p.id}" style="font-weight:bold">1</span>
+                    <button class="btn-qty" onclick="changeQty(${p.id}, 1)">+</button>
+                </div>
+                <button class="btn-add" onclick="addToCart(${p.id})">Añadir</button>
+            </div>
+        `).join('');
+    }
+
+    function changeQty(id, delta) {
+        const el = document.getElementById(`q-${id}`);
         let val = parseInt(el.innerText) + delta;
         if(val >= 1) el.innerText = val;
     }
 
-    function agregar(nombre, precio, idQty) {
-        let cant = parseInt(document.getElementById(idQty).innerText);
-        let subtotal = precio * cant;
+    function addToCart(id) {
+        const p = products.find(prod => prod.id === id);
+        const qty = parseInt(document.getElementById(`q-${id}`).innerText);
+        const sub = p.price * qty;
 
-        // Buscamos si el producto ya está en el carrito para sumar la cantidad
-        let existe = carrito.find(item => item.nombre === nombre);
-        if(existe) {
-            existe.cant += cant;
-            existe.subtotal += subtotal;
+        const exist = cart.find(i => i.id === id);
+        if(exist) {
+            exist.qty += qty;
+            exist.sub += sub;
         } else {
-            carrito.push({ nombre: nombre, cant: cant, subtotal: subtotal });
+            cart.push({ ...p, qty, sub });
         }
-
-        totalGeneral += subtotal;
-        actualizarUI();
-        document.getElementById(idQty).innerText = "1"; // Reset
-        alert("¡" + nombre + " añadido!");
+        total += sub;
+        document.getElementById('totalFooter').innerText = total.toLocaleString();
+        document.getElementById(`q-${id}`).innerText = "1";
     }
 
-    function actualizarUI() {
-        document.getElementById('c-count').innerText = carrito.length;
-        document.getElementById('c-total').innerText = totalGeneral.toLocaleString();
-    }
-
-    function enviarWhatsApp() {
-        if(carrito.length === 0) return alert("¡El carrito está vacío!");
-
-        // --- CONSTRUCCIÓN DEL MENSAJE DE WHATSAPP ---
-        let mensaje = "🧾 *NUEVO PEDIDO*%0A";
-        mensaje += "--------------------------%0A";
-
-        // Recorremos el carrito CUALQUIERA que sea su contenido
-        carrito.forEach(item => {
-            mensaje += "✅ " + item.cant + " x " + item.nombre + " = *$" + item.subtotal.toLocaleString() + "*%0A";
-        });
-
-        mensaje += "--------------------------%0A";
-        mensaje += "💰 *TOTAL A PAGAR: $" + totalGeneral.toLocaleString() + "*%0A%0A";
-        mensaje += "_Por favor confirmar pedido._";
-
-        const telefono = "573007918978";
-        const url = "https://wa.me/" + telefono + "?text=" + mensaje;
+    function abrirFactura() {
+        if(cart.length === 0) return alert("Carrito vacío");
         
-        window.open(url, '_blank');
-    }
-</script>
+        const lista = document.getElementById('listaFactura');
+        lista.innerHTML = cart.map(i => `
+            <div class="factura-item">
+                <span><strong>${i.qty}x</strong> ${i.name}</span>
+                <span>$${i.sub.toLocaleString()}</span>
+            </div>
+        `).join('');
 
+        document.getElementById('totalFactura').innerText = total.toLocaleString();
+        document.getElementById('fechaFactura').innerText = "Emitida el: " + new Date().toLocaleString();
+        document.getElementById('modalFactura').style.display = 'flex';
+    }
+
+    function cerrarFactura() {
+        document.getElementById('modalFactura').style.display = 'none';
+    }
+
+    function confirmarWhatsApp() {
+        let n = Math.floor(Math.random() * 1000);
+        let msg = `🧾 *RECIBO DE VENTA #00${n}*%0A%0A`;
+        cart.forEach(i => {
+            msg += `• ${i.qty} x ${i.name} = *$${i.sub.toLocaleString()}*%0A`;
+        });
+        msg += `%0A💰 *TOTAL: $${total.toLocaleString()}*%0A`;
+        
+        window.open(`https://wa.me/573007918978?text=${msg}`, '_blank');
+    }
+
+    render();
+</script>
 </body>
 </html>
