@@ -3,61 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto por WhatsApp</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <title>Mi Tienda Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0f0f0f;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .card {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-        }
-        h1 { margin-bottom: 10px; }
-        p { color: #888; margin-bottom: 30px; }
-        .btn-whatsapp {
-            background-color: #25d366;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.2rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
-        }
-        .btn-whatsapp:hover {
-            transform: scale(1.05);
-            background-color: #1ebe57;
-        }
+        :root { --primary: #25d366; --dark: #121212; --card: #1e1e1e; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: white; margin: 0; padding: 20px; }
+        header { text-align: center; padding: 20px; }
+        
+        /* Grid de Productos */
+        .productos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; max-width: 1000px; margin: auto; }
+        .producto { background: var(--card); border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #333; }
+        .producto h3 { margin: 10px 0; }
+        .precio { color: var(--primary); font-size: 1.5rem; font-weight: 600; }
+        .btn-add { background: var(--primary); border: none; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%; }
+
+        /* Carrito */
+        .carrito-container { max-width: 600px; margin: 40px auto; background: #fff; color: #333; padding: 20px; border-radius: 15px; }
+        .carrito-item { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0; }
+        .total { font-size: 1.8rem; font-weight: bold; text-align: right; margin-top: 20px; }
+        .btn-pagar { background: #007bff; color: white; border: none; width: 100%; padding: 15px; font-size: 1.2rem; border-radius: 10px; cursor: pointer; margin-top: 10px; }
+        .btn-whatsapp { background: var(--primary); color: white; text-decoration: none; display: block; text-align: center; padding: 15px; border-radius: 10px; margin-top: 10px; font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>¡Hola!</h1>
-        <p>¿Quieres hablar conmigo? Haz clic abajo.</p>
-        
-        <a href="https://wa.me/573007918978?text=Hola,%20vi%20tu%20página%20de%20GitHub" class="btn-whatsapp" target="_blank">
-            <i class="fab fa-whatsapp"></i>
-            Enviar mensaje
+<header>
+    <h1>🛍️ Mi Tienda Virtual</h1>
+    <p>Selecciona tus productos y paga por WhatsApp</p>
+</header>
+
+<div class="productos">
+    <div class="producto">
+        <h3>Producto Pro 1</h3>
+        <p class="precio">$50.000</p>
+        <button class="btn-add" onclick="agregarAlCarrito('Producto Pro 1', 50000)">Añadir al carrito</button>
+    </div>
+    <div class="producto">
+        <h3>Combo Premium</h3>
+        <p class="precio">$85.000</p>
+        <button class="btn-add" onclick="agregarAlCarrito('Combo Premium', 85000)">Añadir al carrito</button>
+    </div>
+</div>
+
+<div class="carrito-container">
+    <h2>🛒 Tu Carrito</h2>
+    <div id="items-carrito">
+        </div>
+    <div class="total">Total: $<span id="total-precio">0</span></div>
+    
+    <button class="btn-pagar" id="btn-orden" onclick="generarOrden()">Generar Número de Pago</button>
+    
+    <div id="seccion-pago" style="display:none; margin-top: 20px; border-top: 2px solid #eee; padding-top: 10px;">
+        <p><strong>Número de Orden:</strong> #<span id="orden-id"></span></p>
+        <p>Realiza tu transferencia y envía el comprobante:</p>
+        <a id="link-whatsapp" class="btn-whatsapp" target="_blank">
+            <i class="fab fa-whatsapp"></i> Enviar Comprobante
         </a>
     </div>
+</div>
+
+<script>
+    let carrito = [];
+    let total = 0;
+
+    function agregarAlCarrito(nombre, precio) {
+        carrito.push({nombre, precio});
+        total += precio;
+        renderizarCarrito();
+    }
+
+    function renderizarCarrito() {
+        const contenedor = document.getElementById('items-carrito');
+        contenedor.innerHTML = '';
+        carrito.forEach((item) => {
+            contenedor.innerHTML += `
+                <div class="carrito-item">
+                    <span>${item.nombre}</span>
+                    <span>$${item.precio.toLocaleString()}</span>
+                </div>`;
+        });
+        document.getElementById('total-precio').innerText = total.toLocaleString();
+    }
+
+    function generarOrden() {
+        if (carrito.length === 0) return alert("El carrito está vacío");
+
+        const ordenId = Math.floor(Math.random() * 900000) + 100000;
+        document.getElementById('orden-id').innerText = ordenId;
+        document.getElementById('seccion-pago').style.display = 'block';
+        
+        // Configurar Link de WhatsApp
+        const numero = "573007918978";
+        let mensaje = `Hola! Quiero pagar mi pedido.%0A*Orden:* %23${ordenId}%0A*Productos:*%0A`;
+        carrito.forEach(item => mensaje += `- ${item.nombre} ($${item.precio})%0A`);
+        mensaje += `%0A*Total a pagar:* $${total.toLocaleString()}%0AAdjunto mi comprobante de pago:`;
+        
+        const link = `https://wa.me/${numero}?text=${mensaje}`;
+        const btnWs = document.getElementById('link-whatsapp');
+        btnWs.href = link;
+        btnWs.style.display = 'block';
+        
+        document.getElementById('btn-orden').disabled = true;
+        document.getElementById('btn-orden').innerText = "Orden Generada ✅";
+    }
+</script>
 
 </body>
 </html>
