@@ -3,195 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mercado Local | Facturación Automática</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Mercado Pro | Factura Dinámica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #fbbf24; --secondary: #10b981; --dark: #0f172a; --light: #f8fafc; }
-        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; color: var(--dark); margin: 0; padding: 20px; padding-bottom: 120px; }
-        
-        .header { text-align: center; padding: 30px 0; background: var(--dark); color: white; margin: -20px -20px 20px -20px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        
-        /* BUSCADOR Y FILTROS */
-        .search-box { width: 100%; max-width: 500px; margin: 0 auto 20px; position: relative; }
-        .search-box input { width: 100%; padding: 12px 15px; border-radius: 12px; border: 2px solid #e2e8f0; box-sizing: border-box; font-size: 1rem; outline: none; transition: 0.3s; }
-        .search-box input:focus { border-color: var(--primary); }
-        
-        .categories { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 20px; scrollbar-width: none; }
-        .categories::-webkit-scrollbar { display: none; }
-        .cat-btn { background: white; border: 1px solid #ddd; padding: 8px 18px; border-radius: 25px; white-space: nowrap; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .cat-btn.active { background: var(--primary); border-color: var(--primary); color: var(--dark); }
-
-        /* PRODUCTOS EN BARRITA */
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 600px; margin: auto; }
-        .card { background: white; border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .prod-info { display: flex; align-items: center; gap: 15px; }
-        .prod-icon { font-size: 2.5rem; background: #f8fafc; padding: 10px; border-radius: 12px; }
-        .prod-details h3 { margin: 0; font-size: 1rem; color: var(--dark); }
-        .prod-details .price { color: var(--secondary); font-weight: 700; font-size: 0.95rem; }
-
-        /* CONTROLES CANTIDAD */
-        .controls { display: flex; align-items: center; gap: 12px; background: #f1f5f9; padding: 5px 12px; border-radius: 10px; }
-        .btn-q { border: none; background: none; font-size: 1.4rem; cursor: pointer; font-weight: bold; color: var(--dark); padding: 0 5px; }
-        .btn-add { background: var(--dark); color: white; border: none; padding: 10px 15px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-left: 10px; transition: 0.2s; }
-        .btn-add:active { transform: scale(0.95); }
-
-        /* NOTIFICACIÓN */
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--secondary); color: white; padding: 12px 25px; border-radius: 50px; display: none; z-index: 1000; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-
-        /* CARRITO FLOTANTE */
-        .cart-summary { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 999; border: 2px solid rgba(255,255,255,0.1); }
-        .btn-checkout { background: var(--primary); color: var(--dark); border: none; padding: 12px 25px; border-radius: 30px; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-checkout:hover { background: #f59e0b; }
+        :root { --primary: #fbbf24; --dark: #0f172a; --secondary: #10b981; }
+        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; padding-bottom: 100px; }
+        .header { text-align: center; background: var(--dark); color: white; padding: 20px; margin: -20px -20px 20px -20px; border-radius: 0 0 20px 20px; }
+        .producto-row { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .controls { display: flex; align-items: center; gap: 10px; background: #eee; padding: 5px 10px; border-radius: 8px; }
+        .btn-q { border: none; background: none; font-size: 1.2rem; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--dark); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
+        .cart-float { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 500px; background: var(--dark); color: white; padding: 15px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .btn-ws { background: var(--primary); color: var(--dark); border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; cursor: pointer; text-decoration: none; }
     </style>
 </head>
 <body>
 
-<div id="toast">✅ Agregado al carrito</div>
-
 <div class="header">
-    <h1 style="margin:0; letter-spacing: -1px;">MERCADO LOCAL</h1>
-    <p style="margin:0; opacity:0.8; font-size: 0.9rem;">Haz tu pedido y paga al recibir</p>
+    <h1>🛒 MI MERCADO</h1>
+    <p>Añade productos y genera tu factura</p>
 </div>
 
-<div class="search-box">
-    <input type="text" id="search" placeholder="Buscar productos (ej. Papa, Arroz...)" onkeyup="filtrarBusqueda()">
-</div>
-
-<div class="categories">
-    <button class="cat-btn active" onclick="filtrarCat('Todos', this)">Todos</button>
-    <button class="cat-btn" onclick="filtrarCat('Fruver', this)">Fruver 🍎</button>
-    <button class="cat-btn" onclick="filtrarCat('Abarrotes', this)">Abarrotes 🍝</button>
-    <button class="cat-btn" onclick="filtrarCat('Aseo', this)">Aseo 🧼</button>
-</div>
-
-<div class="grid" id="productos-grid">
+<div id="lista-productos">
+    <div class="producto-row">
+        <div><strong>Papa Sabanera (lb)</strong><br><span style="color:var(--secondary)">$2.200</span></div>
+        <div style="display:flex; align-items:center;">
+            <div class="controls">
+                <button class="btn-q" onclick="cambiar('q1', -1)">-</button>
+                <span id="q1">1</span>
+                <button class="btn-q" onclick="cambiar('q1', 1)">+</button>
+            </div>
+            <button class="btn-add" onclick="agregar('Papa Sabanera (lb)', 2200, 'q1')">Añadir</button>
+        </div>
     </div>
-
-<div class="cart-summary">
-    <div>
-        <span id="cart-count" style="background: var(--primary); color: var(--dark); padding: 2px 8px; border-radius: 10px; font-weight: bold;">0</span> 
-        <span style="margin-left: 10px; font-weight: 600;">$<span id="cart-total">0</span></span>
+    <div class="producto-row">
+        <div><strong>Arroz Diana (1kg)</strong><br><span style="color:var(--secondary)">$3.800</span></div>
+        <div style="display:flex; align-items:center;">
+            <div class="controls">
+                <button class="btn-q" onclick="cambiar('q2', -1)">-</button>
+                <span id="q2">1</span>
+                <button class="btn-q" onclick="cambiar('q2', 1)">+</button>
+            </div>
+            <button class="btn-add" onclick="agregar('Arroz Diana (1kg)', 3800, 'q2')">Añadir</button>
+        </div>
     </div>
-    <button class="btn-checkout" onclick="enviarFactura()">PEDIR POR WHATSAPP</button>
+</div>
+
+<div class="cart-float">
+    <div>Items: <span id="c-count">0</span> | Total: <strong>$<span id="c-total">0</span></strong></div>
+    <button class="btn-ws" onclick="enviarWhatsApp()">PEDIR POR WHATSAPP</button>
 </div>
 
 <script>
-    // LISTA DE PRODUCTOS (Puedes agregar más aquí)
-    const productos = [
-        { id: 1, nombre: 'Manzana Roja (lb)', precio: 4500, cat: 'Fruver', img: '🍎' },
-        { id: 2, nombre: 'Arroz Diana (1kg)', precio: 3800, cat: 'Abarrotes', img: '🍚' },
-        { id: 3, nombre: 'Jabón Rey', precio: 2500, cat: 'Aseo', img: '🧼' },
-        { id: 4, nombre: 'Papa Sabanera (lb)', precio: 2200, cat: 'Fruver', img: '🥔' },
-        { id: 5, nombre: 'Aceite Girasol (L)', precio: 12000, cat: 'Abarrotes', img: '🌻' },
-        { id: 6, nombre: 'Detergente Ariel', precio: 8500, cat: 'Aseo', img: '✨' },
-        { id: 7, nombre: 'Plátano Maduro', precio: 1500, cat: 'Fruver', img: '🍌' },
-        { id: 8, nombre: 'Lentejas (lb)', precio: 3200, cat: 'Abarrotes', img: '🥣' }
-    ];
-
     let carrito = [];
-    let total = 0;
+    let totalGeneral = 0;
 
-    function renderProductos(lista) {
-        const grid = document.getElementById('productos-grid');
-        grid.innerHTML = '';
-        lista.forEach(p => {
-            grid.innerHTML += `
-                <div class="card">
-                    <div class="prod-info">
-                        <div class="prod-icon">${p.img}</div>
-                        <div class="prod-details">
-                            <h3>${p.nombre}</h3>
-                            <span class="price">$${p.precio.toLocaleString()}</span>
-                        </div>
-                    </div>
-                    <div style="display:flex; align-items:center;">
-                        <div class="controls">
-                            <button class="btn-q" onclick="changeQty(${p.id}, -1)">-</button>
-                            <span id="qty-${p.id}" style="font-weight:bold; min-width: 20px; text-align:center;">1</span>
-                            <button class="btn-q" onclick="changeQty(${p.id}, 1)">+</button>
-                        </div>
-                        <button class="btn-add" onclick="addToCart(${p.id})">OK</button>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    function changeQty(id, delta) {
-        let el = document.getElementById(`qty-${id}`);
+    function cambiar(id, delta) {
+        let el = document.getElementById(id);
         let val = parseInt(el.innerText) + delta;
         if(val >= 1) el.innerText = val;
     }
 
-    function addToCart(id) {
-        const prod = productos.find(p => p.id === id);
-        const cant = parseInt(document.getElementById(`qty-${id}`).innerText);
-        
-        // Agregar al carrito real
-        carrito.push({ nombre: prod.nombre, cant: cant, sub: prod.precio * cant });
-        total += prod.precio * cant;
-        
-        updateSummary();
-        showToast();
-        document.getElementById(`qty-${id}`).innerText = "1"; // Reset cantidad
+    function agregar(nombre, precio, idQty) {
+        let cant = parseInt(document.getElementById(idQty).innerText);
+        let subtotal = precio * cant;
+
+        // Buscamos si el producto ya está en el carrito para sumar la cantidad
+        let existe = carrito.find(item => item.nombre === nombre);
+        if(existe) {
+            existe.cant += cant;
+            existe.subtotal += subtotal;
+        } else {
+            carrito.push({ nombre: nombre, cant: cant, subtotal: subtotal });
+        }
+
+        totalGeneral += subtotal;
+        actualizarUI();
+        document.getElementById(idQty).innerText = "1"; // Reset
+        alert("¡" + nombre + " añadido!");
     }
 
-    function updateSummary() {
-        document.getElementById('cart-count').innerText = carrito.length;
-        document.getElementById('cart-total').innerText = total.toLocaleString();
+    function actualizarUI() {
+        document.getElementById('c-count').innerText = carrito.length;
+        document.getElementById('c-total').innerText = totalGeneral.toLocaleString();
     }
 
-    function showToast() {
-        const t = document.getElementById('toast');
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 1500);
-    }
+    function enviarWhatsApp() {
+        if(carrito.length === 0) return alert("¡El carrito está vacío!");
 
-    function filtrarBusqueda() {
-        const text = document.getElementById('search').value.toLowerCase();
-        const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(text));
-        renderProductos(filtrados);
-    }
+        // --- CONSTRUCCIÓN DEL MENSAJE DE WHATSAPP ---
+        let mensaje = "🧾 *NUEVO PEDIDO*%0A";
+        mensaje += "--------------------------%0A";
 
-    function filtrarCat(cat, btn) {
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if(cat === 'Todos') renderProductos(productos);
-        else renderProductos(productos.filter(p => p.cat === cat));
-    }
-
-    function enviarFactura() {
-        if(carrito.length === 0) return alert("El carrito está vacío, pa.");
-        
-        // Número de factura secuencial (Local)
-        if(!localStorage.getItem('factNum')) localStorage.setItem('factNum', 1);
-        let n = localStorage.getItem('factNum');
-        let fecha = new Date().toLocaleDateString();
-        
-        // --- AQUÍ SE CREA TU LISTA PERSONALIZADA PARA WHATSAPP ---
-        let msg = `🧾 *FACTURA DE VENTA #00${n}*%0A`;
-        msg += `📅 _Fecha: ${fecha}_%0A`;
-        msg += `--------------------------%0A`;
-        msg += `*CANT. | PRODUCTO | SUBTOTAL*%0A`;
-        
+        // Recorremos el carrito CUALQUIERA que sea su contenido
         carrito.forEach(item => {
-            msg += `• ${item.cant} x ${item.nombre} - *$${item.sub.toLocaleString()}*%0A`;
+            mensaje += "✅ " + item.cant + " x " + item.nombre + " = *$" + item.subtotal.toLocaleString() + "*%0A";
         });
 
-        msg += `--------------------------%0A`;
-        msg += `💰 *TOTAL A PAGAR: $${total.toLocaleString()}*%0A`;
-        msg += `--------------------------%0A`;
-        msg += `_Pedido realizado desde la Web Mercado Local._`;
-        
-        localStorage.setItem('factNum', parseInt(n) + 1);
-        
-        const telefono = "573007918978"; 
-        window.open(`https://wa.me/${telefono}?text=${msg}`, '_blank');
-    }
+        mensaje += "--------------------------%0A";
+        mensaje += "💰 *TOTAL A PAGAR: $" + totalGeneral.toLocaleString() + "*%0A%0A";
+        mensaje += "_Por favor confirmar pedido._";
 
-    // Inicializar
-    renderProductos(productos);
+        const telefono = "573007918978";
+        const url = "https://wa.me/" + telefono + "?text=" + mensaje;
+        
+        window.open(url, '_blank');
+    }
 </script>
 
 </body>
