@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto por WhatsApp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f0f0f;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .card {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+        }
+        h1 { margin-bottom: 10px; }
+        p { color: #888; margin-bottom: 30px; }
+        .btn-whatsapp {
+            background-color: #25d366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-whatsapp:hover {
+            transform: scale(1.05);
+            background-color: #1ebe57;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>¡Hola!</h1>
+        <p>¿Quieres hablar conmigo? Haz clic abajo.</p>
+        
+        <a href="https://wa.me/573007918978?text=Hola,%20vi%20tu%20página%20de%20GitHub" class="btn-whatsapp" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+            Enviar mensaje
+        </a>
+    </div>
+
+</body>
+</html>
